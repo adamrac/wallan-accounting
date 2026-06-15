@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Faqs from '../components/Faqs.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { generalFaqs } from '../data/faqs';
+import { services } from '../data/services';
+import { breadcrumbSchema, faqSchema } from '../lib/schema';
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'FAQs', href: '/faq/' },
+];
+const title = 'Frequently Asked Questions | Wallan Accounting & Bookkeeping';
+const description =
+  'Answers to common questions about tax returns, BAS, bookkeeping, pricing and how Wallan Accounting & Bookkeeping can help individuals and businesses in the Mitchell Shire.';
+
+// Combine general + a couple from each service for a rich FAQ page.
+const serviceFaqs = services.flatMap((s) => s.faqs.slice(0, 1).map((f) => ({ ...f })));
+const allFaqs = [...generalFaqs, ...serviceFaqs];
+const schema = [breadcrumbSchema(crumbs), faqSchema(allFaqs)];
+---
+<BaseLayout title={title} description={description} path="/faq/" schema={schema}>
+  <Breadcrumbs items={crumbs} />
+  <section style="padding-top:28px">
+    <div class="container container-narrow">
+      <div class="section-head">
+        <span class="eyebrow">Help centre</span>
+        <h1>Frequently asked questions</h1>
+        <p class="lead">Everything you might want to know before getting in touch. Still stuck? Just call Shannon.</p>
+      </div>
+
+      <Faqs items={generalFaqs} heading="General" />
+
+      <h2 style="margin-top:2rem">About our services</h2>
+      <Faqs items={serviceFaqs} heading="" />
+    </div>
+  </section>
+  <CtaBand />
+</BaseLayout>

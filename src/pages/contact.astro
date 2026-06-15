@@ -1,0 +1,89 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Icon from '../components/Icon.astro';
+import Reveal from '../components/Reveal.astro';
+import { SITE } from '../site.config';
+import { breadcrumbSchema } from '../lib/schema';
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Contact', href: '/contact/' },
+];
+const title = 'Contact Wallan Accounting & Bookkeeping';
+const description = `Contact Wallan Accounting & Bookkeeping for a free consultation. Call Shannon on ${SITE.phone} or send a message. Serving Wallan and the Mitchell Shire region.`;
+const schema = [breadcrumbSchema(crumbs)];
+---
+<BaseLayout title={title} description={description} path="/contact/" schema={schema}>
+  <Breadcrumbs items={crumbs} />
+  <section style="padding-top:28px">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Get in touch</span>
+        <h1>Book your free consultation</h1>
+        <p class="lead">
+          Have a question or ready to get started? Call Shannon for a free, no-obligation chat —
+          or send an email and we’ll get back to you.
+        </p>
+      </div>
+
+      <div class="split" style="align-items:start">
+        <Reveal variant="left">
+          <div class="card">
+            <h2 class="mt-0">Get in touch with Shannon</h2>
+            <p>
+              The easiest way to reach us is by email or phone. Send through a quick note about what
+              you need help with and we’ll get back to you — usually the same business day.
+            </p>
+            <div class="btn-row">
+              <a
+                href={`mailto:${SITE.email}?subject=${encodeURIComponent('Website enquiry')}`}
+                class="btn btn-primary"
+              ><Icon name="mail" class="" />Email Shannon</a>
+              <a href={`tel:${SITE.phoneE164}`} class="btn btn-outline"><Icon name="phone" class="" />Call now</a>
+            </div>
+            <p class="muted" style="font-size:0.9rem;margin-top:18px;margin-bottom:0">
+              Or email us directly at <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+            </p>
+          </div>
+        </Reveal>
+
+        <Reveal variant="right">
+        <div class="contact-card">
+          <div class="contact-row">
+            <div class="icon-badge"><Icon name="phone" class="" /></div>
+            <div>
+              <strong>Phone</strong><br />
+              <a href={`tel:${SITE.phoneE164}`} style="font-size:1.15rem;font-weight:700">{SITE.phone}</a>
+            </div>
+          </div>
+          <div class="contact-row">
+            <div class="icon-badge"><Icon name="mail" class="" /></div>
+            <div>
+              <strong>Email</strong><br />
+              <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+            </div>
+          </div>
+          <div class="contact-row">
+            <div class="icon-badge"><Icon name="map" class="" /></div>
+            <div>
+              <strong>Location</strong><br />
+              {SITE.address.locality}, {SITE.address.region} {SITE.address.postcode}<br />
+              <span class="muted">Serving the whole Mitchell Shire region</span>
+            </div>
+          </div>
+          <div class="contact-row">
+            <div class="icon-badge"><Icon name="clock" class="" /></div>
+            <div>
+              <strong>Hours</strong><br />
+              {SITE.hours.map((h) => (
+                <span>{h.days}: {h.close ? `${h.open}–${h.close}` : h.open}<br /></span>
+              ))}
+            </div>
+          </div>
+        </div>
+        </Reveal>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,177 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import Icon from '../../../components/Icon.astro';
+import Faqs from '../../../components/Faqs.astro';
+import CtaBand from '../../../components/CtaBand.astro';
+import Reveal from '../../../components/Reveal.astro';
+import { SITE } from '../../../site.config';
+import { services } from '../../../data/services';
+import { locations, nearbyLocations } from '../../../data/locations';
+import { breadcrumbSchema, faqSchema, serviceSchema } from '../../../lib/schema';
+
+export function getStaticPaths() {
+  const paths = [];
+  for (const location of locations) {
+    for (const service of services) {
+      paths.push({
+        params: { location: location.slug, service: service.slug },
+        props: { location, service },
+      });
+    }
+  }
+  return paths;
+}
+
+const { location, service } = Astro.props;
+const path = `/locations/${location.slug}/${service.slug}/`;
+
+// Deterministic variation so combo pages aren't carbon copies of one another.
+function hash(str: string) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) >>> 0;
+  return h;
+}
+const seed = hash(location.slug + service.slug);
+
+const intros = [
+  `Looking for reliable ${service.name.toLowerCase()} in ${location.name}? Wallan Accounting & Bookkeeping is the friendly local team you can count on.`,
+  `If you need ${service.name.toLowerCase()} in ${location.name}, we make it simple, accurate and affordable — without the big-firm price tag.`,
+  `${location.name} residents and businesses trust us for ${service.name.toLowerCase()} that’s done right the first time.`,
+  `Need a hand with ${service.name.toLowerCase()} in ${location.name}? We take the stress out of it so you can focus on what matters.`,
+];
+const closers = [
+  `As a local practice based just up the road in Wallan, we know the ${location.shire} and the people in it.`,
+  `Being local to the ${location.shire}, we’re only ever a quick call or email away for ${location.name} clients.`,
+  `We’re proud to support ${location.name} as part of our home region, the ${location.shire}.`,
+];
+const intro = intros[seed % intros.length];
+const closer = closers[seed % closers.length];
+
+const nearby = nearbyLocations(location.slug, 5);
+const otherServices = services.filter((s) => s.slug !== service.slug).slice(0, 6);
+
+// Localised FAQs: prepend a location-specific Q to the service FAQs.
+const localFaqs = [
+  {
+    q: `Do you provide ${service.name.toLowerCase()} in ${location.name}?`,
+    a: `Yes — we provide ${service.name.toLowerCase()} to individuals and businesses throughout ${location.name} (${location.postcode}) and the wider ${location.shire}. You can work with us online or arrange to meet locally. Call Shannon on ${SITE.phone} to get started.`,
+  },
+  ...service.faqs,
+];
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Service Areas', href: '/locations/' },
+  { label: location.name, href: `/locations/${location.slug}/` },
+  { label: service.shortName, href: path },
+];
+const title = `${service.name} in ${location.name}, VIC ${location.postcode}`;
+const description = `${service.name} in ${location.name}? ${service.summary} Local, affordable & reliable for ${location.name} and the ${location.shire}. Free consultation — call ${SITE.phone}.`;
+const schema = [
+  breadcrumbSchema(crumbs),
+  serviceSchema({
+    name: `${service.name} in ${location.name}`,
+    description: service.summary,
+    path,
+    areaServed: `${location.name}, VIC ${location.postcode}`,
+  }),
+  faqSchema(localFaqs),
+];
+---
+<BaseLayout title={title} description={description} path={path} schema={schema}>
+  <Breadcrumbs items={crumbs} />
+  <section style="padding-top:28px">
+    <div class="container">
+      <div class="split">
+        <Reveal variant="left">
+          <span class="eyebrow">{service.shortName} · {location.name} {location.postcode}</span>
+          <h1>{service.name} in {location.name}</h1>
+          <p class="lead">{intro}</p>
+          <p>{location.blurb}</p>
+          <p>
+            {service.intro[0]} {closer} Basic tax returns start from just
+            ${SITE.pricing.basicTaxReturnFrom}, and your first consultation is always free.
+          </p>
+          <div class="btn-row">
+            <a href={`tel:${SITE.phoneE164}`} class="btn btn-primary">Call now</a>
+            <a href="/contact/" class="btn btn-outline">Free Consultation</a>
+          </div>
+        </Reveal>
+        <Reveal variant="right">
+          <div class="contact-card">
+            <div class="icon-badge"><Icon name={service.icon} class="" /></div>
+            <h3 class="mt-0">{service.shortName} in {location.name} includes</h3>
+            <ul class="ticks">
+              {service.includes.map((i) => <li>{i}</li>)}
+            </ul>
+          </div>
+        </Reveal>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-soft">
+    <div class="container container-narrow">
+      <span class="eyebrow">Local &amp; affordable</span>
+      <h2>{service.name} for {location.name} done right</h2>
+      <p>{service.intro[1] ?? service.intro[0]}</p>
+      <p>
+        {service.audience} If that sounds like you and you’re in or around {location.name}, we’d love
+        to help. We combine genuine local knowledge of the {location.shire} with the full range of
+        accounting and bookkeeping services — so you get everything you need from one trusted team.
+      </p>
+      <div class="btn-row">
+        <a href={`/locations/${location.slug}/`} class="btn btn-outline">All services in {location.name} →</a>
+        <a href={`/services/${service.slug}/`} class="btn btn-outline">More about {service.shortName} →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Other services in this town -->
+  <section>
+    <div class="container">
+      <div class="section-head"><span class="eyebrow">More in {location.name}</span><h2>Other services for {location.name}</h2></div>
+      <div class="grid grid-3">
+        {otherServices.map((s, i) => (
+          <Reveal variant="up" delay={(i % 3) * 0.07}>
+            <a class="card" href={`/locations/${location.slug}/${s.slug}/`}>
+              <div class="icon-badge"><Icon name={s.icon} class="" /></div>
+              <h3>{s.shortName} in {location.name}</h3>
+              <p>{s.summary}</p>
+              <span class="arrow">Learn more →</span>
+            </a>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-soft">
+    <div class="container container-narrow">
+      <Faqs items={localFaqs} heading={`${service.shortName} in ${location.name}: FAQs`} />
+    </div>
+  </section>
+
+  <!-- Same service, nearby towns -->
+  <section>
+    <div class="container">
+      <div class="section-head"><span class="eyebrow">Nearby</span><h2>{service.shortName} in nearby areas</h2></div>
+      <div class="grid grid-4">
+        {nearby.map((l, i) => (
+          <Reveal variant="scale" delay={(i % 4) * 0.05}>
+            <a class="card" href={`/locations/${l.slug}/${service.slug}/`} style="padding:16px 18px">
+              <strong style="color:var(--ink)">{service.shortName} in {l.name}</strong>
+              <div style="font-size:0.82rem;color:var(--muted)">{l.name} {l.postcode}</div>
+            </a>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    title={`Need ${service.shortName.toLowerCase()} in ${location.name}?`}
+    text={`Call Shannon on ${SITE.phone} for a free consultation. Local, affordable ${service.name.toLowerCase()} for ${location.name} and the ${location.shire}.`}
+  />
+</BaseLayout>

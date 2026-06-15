@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Reveal from '../components/Reveal.astro';
+import { services } from '../data/services';
+---
+<BaseLayout title="Page Not Found" description="Sorry, we couldn’t find that page." noindex={true}>
+  <section style="padding-top:60px" class="text-center">
+    <div class="container container-narrow">
+      <span class="eyebrow">404</span>
+      <h1>We couldn’t find that page</h1>
+      <p class="lead">The page may have moved. Try one of these instead:</p>
+      <div class="btn-row" style="justify-content:center">
+        <a href="/" class="btn btn-purple">Home</a>
+        <a href="/services/" class="btn btn-outline">Services</a>
+        <a href="/contact/" class="btn btn-outline">Contact</a>
+      </div>
+      <div class="grid grid-3" style="margin-top:40px;text-align:left">
+        {services.slice(0, 6).map((s, i) => (
+          <Reveal variant="up" delay={(i % 3) * 0.08}>
+            <a class="card" href={`/services/${s.slug}/`}><h3>{s.name}</h3><p>{s.summary}</p></a>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

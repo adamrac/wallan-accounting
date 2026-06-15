@@ -1,0 +1,30 @@
+---
+import { SITE } from '../site.config';
+import Reveal from './Reveal.astro';
+import DecoShapes from './motion/DecoShapes.tsx';
+interface Props {
+  title?: string;
+  text?: string;
+}
+const {
+  title = 'Ready to get started? Book your free consultation',
+  text = `Call Shannon today on ${SITE.phone} for a free, no-obligation chat. Basic tax returns from $${SITE.pricing.basicTaxReturnFrom}.`,
+} = Astro.props;
+---
+<section>
+  <div class="container">
+    <Reveal variant="scale">
+      <div class="cta-band" style="position:relative;overflow:hidden">
+        <DecoShapes tone="light" client:visible />
+        <div style="position:relative;z-index:1">
+          <h2>{title}</h2>
+          <p>{text}</p>
+          <div class="btn-row">
+            <a href={`tel:${SITE.phoneE164}`} class="btn btn-primary">Call now</a>
+            <a href="/contact/" class="btn btn-outline">Send a Message</a>
+          </div>
+        </div>
+      </div>
+    </Reveal>
+  </div>
+</section>

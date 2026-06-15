@@ -1,0 +1,183 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import Faqs from '../components/Faqs.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Reveal from '../components/Reveal.astro';
+import HeroArt from '../components/motion/HeroArt.tsx';
+import DecoShapes from '../components/motion/DecoShapes.tsx';
+import OrbitArt from '../components/motion/OrbitArt.tsx';
+import { SITE } from '../site.config';
+import { services } from '../data/services';
+import { locations } from '../data/locations';
+import { generalFaqs } from '../data/faqs';
+import { faqSchema } from '../lib/schema';
+
+const title = 'Wallan Accounting & Bookkeeping | Local Accountants & Tax Agents';
+const description = SITE.description;
+const featuredLocations = locations.slice(0, 12);
+
+const values = [
+  { icon: 'map', title: 'Genuinely local', text: 'Based right here in Wallan — we understand the Mitchell Shire and the people and businesses in it.' },
+  { icon: 'shield', title: 'Registered & trusted', text: 'Tax and BAS lodgements handled correctly and on time, with the deadline extensions agents receive.' },
+  { icon: 'check', title: 'Maximum refunds', text: 'We find the deductions you’re entitled to so you keep more of your money at tax time.' },
+  { icon: 'phone', title: 'Easy to deal with', text: 'Friendly, plain-English advice from Shannon. No jargon, no judgement, no surprises.' },
+];
+
+const schema = [faqSchema(generalFaqs)];
+---
+<BaseLayout title={title} description={description} path="/" schema={schema}>
+  <!-- Hero -->
+  <section class="hero">
+    <DecoShapes tone="light" client:visible />
+    <div class="container">
+      <div class="hero-grid">
+        <Reveal variant="up">
+          <h1>Local Accountants &amp; Bookkeepers in Wallan</h1>
+          <p>
+            Stress-free tax returns, bookkeeping, BAS and small business advice for individuals and
+            businesses across Wallan and the wider Mitchell Shire region. Friendly local service from Shannon.
+          </p>
+          <ul class="hero-badges">
+            <li>✓ Basic tax returns from ${SITE.pricing.basicTaxReturnFrom}</li>
+            <li>✓ Free consultation</li>
+            <li>✓ Xero · MYOB · QuickBooks</li>
+            <li>✓ Individuals &amp; businesses</li>
+          </ul>
+          <div class="btn-row">
+            <a href={`tel:${SITE.phoneE164}`} class="btn btn-primary"><Icon name="phone" class="" />Call now</a>
+            <a href="/services/" class="btn btn-outline">Explore Services</a>
+          </div>
+        </Reveal>
+        <div class="hero-art">
+          <HeroArt client:load />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section class="section-soft has-deco">
+    <DecoShapes tone="purple" density="soft" client:visible />
+    <div class="container">
+      <Reveal variant="up">
+        <div class="section-head center">
+          <span class="eyebrow">What we do</span>
+          <h2>Accounting &amp; bookkeeping services for your local area</h2>
+          <p class="lead">Everything you need to stay compliant, save tax and run a healthier business — all in one local team.</p>
+        </div>
+      </Reveal>
+      <div class="grid grid-3">
+        {services.map((s, i) => (
+          <Reveal variant="up" delay={(i % 3) * 0.08}>
+            <a class="card" href={`/services/${s.slug}/`}>
+              <div class="icon-badge"><Icon name={s.icon} class="" /></div>
+              <h3>{s.name}</h3>
+              <p>{s.summary}</p>
+              <span class="arrow">Learn more →</span>
+            </a>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Why choose us -->
+  <section class="has-deco">
+    <DecoShapes tone="purple" density="soft" client:visible />
+    <div class="container">
+      <div class="split">
+        <Reveal variant="left">
+          <span class="eyebrow">Why locals choose us</span>
+          <h2>The friendly local choice for tax &amp; bookkeeping</h2>
+          <p>
+            Wallan Accounting &amp; Bookkeeping is a small, local practice that treats you like a
+            person, not a number. Whether you need a simple tax return, ongoing bookkeeping or
+            advice to grow your business, we make it easy and affordable.
+          </p>
+          <ul class="ticks">
+            <li>Individual &amp; business tax returns lodged accurately and on time</li>
+            <li>BAS, GST, payroll and bookkeeping fully taken care of</li>
+            <li>Help to start, structure and grow your small business</li>
+            <li>Cloud accounting so we can help you wherever you are</li>
+          </ul>
+          <div class="btn-row">
+            <a href="/about/" class="btn btn-purple">About Us</a>
+            <a href="/contact/" class="btn btn-outline">Get in Touch</a>
+          </div>
+        </Reveal>
+        <div class="why-art">
+          <OrbitArt client:visible />
+        </div>
+      </div>
+      <div class="grid grid-4" style="margin-top:48px">
+        {values.map((v, i) => (
+          <Reveal variant="up" delay={(i % 4) * 0.08}>
+            <div class="card card-feature">
+              <div class="icon-badge"><Icon name={v.icon} class="" /></div>
+              <h3>{v.title}</h3>
+              <p>{v.text}</p>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats / trust -->
+  <section class="section-purple">
+    <DecoShapes tone="amber" client:visible />
+    <div class="container">
+      <div class="stats">
+        <div class="stat"><div class="num" style="color:#f5a623">${SITE.pricing.basicTaxReturnFrom}</div><div class="label" style="color:#e4d7f2">Basic tax returns from</div></div>
+        <div class="stat"><div class="num" style="color:#f5a623">FREE</div><div class="label" style="color:#e4d7f2">Initial consultation</div></div>
+        <div class="stat"><div class="num" style="color:#f5a623">{services.length}</div><div class="label" style="color:#e4d7f2">Services under one roof</div></div>
+        <div class="stat"><div class="num" style="color:#f5a623">{locations.length}+</div><div class="label" style="color:#e4d7f2">Local areas served</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Service areas -->
+  <section class="section-soft has-deco">
+    <DecoShapes tone="purple" density="soft" client:visible />
+    <div class="container">
+      <Reveal variant="up">
+        <div class="section-head center">
+          <span class="eyebrow">Service areas</span>
+          <h2>Serving Wallan &amp; the whole Mitchell Shire region</h2>
+          <p class="lead">Proudly local — we help individuals and businesses right across central Victoria.</p>
+        </div>
+      </Reveal>
+      <div class="grid grid-4">
+        {featuredLocations.map((l, i) => (
+          <Reveal variant="scale" delay={(i % 4) * 0.06}>
+            <a class="card" href={`/locations/${l.slug}/`} style="padding:18px 20px">
+              <strong style="color:var(--ink)">{l.name}</strong>
+              <div style="font-size:0.85rem;color:var(--muted)">{l.postcode} · {l.shire}</div>
+            </a>
+          </Reveal>
+        ))}
+      </div>
+      <p class="text-center" style="margin-top:26px">
+        <a href="/locations/" class="btn btn-purple">View all service areas →</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="has-deco">
+    <DecoShapes tone="purple" density="soft" client:visible />
+    <div class="container container-narrow">
+      <Reveal variant="up">
+        <div class="section-head center">
+          <span class="eyebrow">Good to know</span>
+          <h2>Frequently asked questions</h2>
+        </div>
+        <Faqs items={generalFaqs} heading="" />
+        <p class="text-center" style="margin-top:20px"><a href="/faq/">See all FAQs →</a></p>
+      </Reveal>
+    </div>
+  </section>
+
+  <CtaBand />
+</BaseLayout>

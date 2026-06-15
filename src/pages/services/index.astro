@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Icon from '../../components/Icon.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Reveal from '../../components/Reveal.astro';
+import { services } from '../../data/services';
+import { breadcrumbSchema } from '../../lib/schema';
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Services', href: '/services/' },
+];
+const title = 'Accounting & Bookkeeping Services in Wallan';
+const description =
+  'Full-service accounting and bookkeeping in Wallan, Victoria — individual & business tax returns, BAS & GST, bookkeeping, payroll, financial statements, business advice and software support.';
+const schema = [breadcrumbSchema(crumbs)];
+---
+<BaseLayout title={title} description={description} path="/services/" schema={schema}>
+  <Breadcrumbs items={crumbs} />
+  <section style="padding-top:28px">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Our services</span>
+        <h1>Accounting &amp; bookkeeping services in Wallan</h1>
+        <p class="lead">
+          From tax returns to full-service bookkeeping, we offer everything individuals and small
+          businesses across the Mitchell Shire need — friendly, local and affordable.
+        </p>
+      </div>
+      <div class="grid grid-3">
+        {services.map((s, i) => (
+          <Reveal variant="up" delay={(i % 3) * 0.08}>
+            <a class="card" href={`/services/${s.slug}/`}>
+              <div class="icon-badge"><Icon name={s.icon} class="" /></div>
+              <h3>{s.name}</h3>
+              <p>{s.summary}</p>
+              <span class="arrow">Learn more →</span>
+            </a>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+  <CtaBand />
+</BaseLayout>

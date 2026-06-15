@@ -1,0 +1,96 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Faqs from '../components/Faqs.astro';
+import Reveal from '../components/Reveal.astro';
+import { SITE } from '../site.config';
+import { breadcrumbSchema, faqSchema } from '../lib/schema';
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Pricing', href: '/pricing/' },
+];
+const title = 'Pricing | Affordable Tax & Bookkeeping in Wallan';
+const description = `Affordable, transparent pricing from Wallan Accounting & Bookkeeping. Basic tax returns from $${SITE.pricing.basicTaxReturnFrom}, free consultations, and tailored quotes for bookkeeping and business services.`;
+
+const pricingFaqs = [
+  { q: 'Is the consultation really free?', a: 'Yes. Your initial consultation is free and there’s no obligation. It’s a chance to understand your needs and give you a clear quote.' },
+  { q: 'Is my fee tax deductible?', a: 'Generally yes — the cost of managing your tax affairs, including our fee, is deductible on your next return.' },
+  { q: 'Do you charge by the hour or a fixed fee?', a: 'For most individual tax returns we charge a fixed, agreed fee. For bookkeeping and business services we’ll quote based on your needs — hourly or a fixed monthly package, whatever suits you best.' },
+  { q: 'Can you take the fee out of my refund?', a: 'In many cases yes — ask us about fee-from-refund options when you book.' },
+];
+const schema = [breadcrumbSchema(crumbs), faqSchema(pricingFaqs)];
+
+const tiers = [
+  {
+    name: 'Individual Tax Return',
+    price: `From $${SITE.pricing.basicTaxReturnFrom}`,
+    note: 'Basic salary & wage return',
+    features: ['Preparation & electronic lodgement', 'Deduction review', 'Refund estimate before lodging', 'Fast turnaround'],
+    cta: 'Book now',
+    featured: false,
+  },
+  {
+    name: 'Business & Bookkeeping',
+    price: 'Tailored quote',
+    note: 'Sole traders & small business',
+    features: ['Bookkeeping packages', 'BAS & GST lodgements', 'Payroll & STP', 'Financial statements', 'Software setup & support'],
+    cta: 'Get a quote',
+    featured: true,
+  },
+  {
+    name: 'Business Setup',
+    price: 'Tailored quote',
+    note: 'Starting a new business',
+    features: ['Structure advice', 'ABN & GST registration', 'Business name registration', 'Bookkeeping setup'],
+    cta: 'Get started',
+    featured: false,
+  },
+];
+---
+<BaseLayout title={title} description={description} path="/pricing/" schema={schema}>
+  <Breadcrumbs items={crumbs} />
+  <section style="padding-top:28px">
+    <div class="container">
+      <div class="section-head center">
+        <span class="eyebrow">Pricing</span>
+        <h1>Affordable, transparent pricing</h1>
+        <p class="lead">
+          No hidden fees, no surprises. We agree your price up front, and your initial consultation
+          is always free.
+        </p>
+      </div>
+
+      <div class="grid grid-3">
+        {tiers.map((t, i) => (
+          <Reveal variant="up" delay={i * 0.1}>
+          <div class="card" style={t.featured ? 'border:2px solid var(--purple);box-shadow:var(--shadow)' : ''}>
+            {t.featured && <span class="pill">Most popular</span>}
+            <h3>{t.name}</h3>
+            <div style="font-size:1.9rem;font-weight:800;color:var(--purple);line-height:1.1">{t.price}</div>
+            <p class="muted" style="margin-top:4px">{t.note}</p>
+            <ul class="ticks">
+              {t.features.map((f) => <li>{f}</li>)}
+            </ul>
+            <a href="/contact/" class={`btn ${t.featured ? 'btn-primary' : 'btn-outline'}`} style="width:100%;justify-content:center">{t.cta}</a>
+          </div>
+          </Reveal>
+        ))}
+      </div>
+
+      <p class="text-center muted" style="margin-top:24px;font-size:0.92rem">
+        Prices are a guide only and depend on the complexity of your situation. We’ll always confirm
+        your fee before any work begins.
+      </p>
+    </div>
+  </section>
+
+  <section class="section-soft">
+    <div class="container container-narrow">
+      <Faqs items={pricingFaqs} heading="Pricing FAQs" />
+    </div>
+  </section>
+
+  <CtaBand />
+</BaseLayout>

@@ -1,0 +1,99 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Icon from '../components/Icon.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Reveal from '../components/Reveal.astro';
+import { SITE } from '../site.config';
+import { services } from '../data/services';
+import { breadcrumbSchema } from '../lib/schema';
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'About', href: '/about/' },
+];
+const title = 'About Wallan Accounting & Bookkeeping';
+const description =
+  'Meet Wallan Accounting & Bookkeeping — your friendly local accountant and bookkeeper in Wallan, Victoria. Affordable, down-to-earth tax and business support for the Mitchell Shire.';
+const schema = [breadcrumbSchema(crumbs)];
+---
+<BaseLayout title={title} description={description} path="/about/" schema={schema}>
+  <Breadcrumbs items={crumbs} />
+  <section style="padding-top:28px">
+    <div class="container">
+      <div class="split">
+        <Reveal variant="left">
+          <span class="eyebrow">About us</span>
+          <h1>Your friendly local accountant in Wallan</h1>
+          <p class="lead">
+            Wallan Accounting &amp; Bookkeeping is a small, local practice built on a simple idea:
+            that great accounting should be approachable, affordable and genuinely helpful.
+          </p>
+          <p>
+            Led by Shannon, we look after individuals, families and small businesses right across
+            Wallan and the Mitchell Shire. From a straightforward tax return to ongoing bookkeeping,
+            BAS, payroll and business advice, we take the stress out of the numbers so you can get on
+            with what matters.
+          </p>
+          <p>
+            We believe in plain English, not jargon. We’ll explain what’s going on, answer your
+            questions patiently, and make sure you only ever pay what you should — while claiming
+            everything you’re entitled to.
+          </p>
+          <div class="btn-row">
+            <a href={`tel:${SITE.phoneE164}`} class="btn btn-primary">Call now</a>
+            <a href="/contact/" class="btn btn-outline">Book a Free Chat</a>
+          </div>
+        </Reveal>
+        <Reveal variant="right">
+        <div class="contact-card">
+          <h3 class="mt-0">Why people choose us</h3>
+          <ul class="ticks">
+            <li><strong>Local &amp; personal</strong> — based in Wallan, we know the area and its businesses.</li>
+            <li><strong>Affordable</strong> — basic tax returns from just ${SITE.pricing.basicTaxReturnFrom}.</li>
+            <li><strong>All-in-one</strong> — tax, bookkeeping, BAS, payroll and advice in one place.</li>
+            <li><strong>Flexible</strong> — work with us online or in person, whatever suits you.</li>
+            <li><strong>No surprises</strong> — clear pricing agreed up front, every time.</li>
+          </ul>
+        </div>
+        </Reveal>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-soft">
+    <div class="container">
+      <div class="section-head center">
+        <span class="eyebrow">How we help</span>
+        <h2>Everything under one roof</h2>
+      </div>
+      <div class="grid grid-3">
+        {services.map((s, i) => (
+          <Reveal variant="up" delay={(i % 3) * 0.08}>
+            <a class="card" href={`/services/${s.slug}/`}>
+              <div class="icon-badge"><Icon name={s.icon} class="" /></div>
+              <h3>{s.name}</h3>
+              <p>{s.summary}</p>
+              <span class="arrow">Learn more →</span>
+            </a>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container container-narrow">
+      <span class="eyebrow">Our values</span>
+      <h2>What we stand for</h2>
+      <div class="grid grid-2" style="margin-top:20px">
+        <Reveal variant="up" delay={0}><div class="card"><h3>Honesty</h3><p>Straight answers and clear pricing. We tell you what you need to know, not what you want to hear.</p></div></Reveal>
+        <Reveal variant="up" delay={0.08}><div class="card"><h3>Care</h3><p>Your finances matter. We treat every client’s situation with the attention it deserves.</p></div></Reveal>
+        <Reveal variant="up" delay={0.16}><div class="card"><h3>Value</h3><p>Quality advice that pays for itself — affordable fees and refunds maximised.</p></div></Reveal>
+        <Reveal variant="up" delay={0.24}><div class="card"><h3>Community</h3><p>We’re part of this community and proud to support local people and businesses.</p></div></Reveal>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand />
+</BaseLayout>

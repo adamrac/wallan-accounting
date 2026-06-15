@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Sitemap (update the domain if it changes)
+Sitemap: https://www.wallanaccountingandbookkeeping.com.au/sitemap-index.xml

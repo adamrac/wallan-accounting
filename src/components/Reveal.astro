@@ -1,0 +1,26 @@
+---
+/**
+ * Lightweight, bulletproof scroll-reveal.
+ * Content is visible by default; the entrance animation is a pure
+ * progressive enhancement applied only when JS + IntersectionObserver run
+ * (see the inline script in BaseLayout). Nothing can ever stay hidden.
+ */
+interface Props {
+  variant?: 'up' | 'down' | 'left' | 'right' | 'scale' | 'fade';
+  delay?: number;
+  class?: string;
+}
+const { variant = 'up', delay = 0, class: cls = '' } = Astro.props;
+const variantClass: Record<string, string> = {
+  up: 'r-up',
+  down: 'r-down',
+  left: 'r-left',
+  right: 'r-right',
+  scale: 'r-scale',
+  fade: 'r-fade',
+};
+const style = delay ? `--reveal-delay:${delay}s` : undefined;
+---
+<div class={`reveal ${variantClass[variant] ?? 'r-up'} ${cls}`.trim()} style={style}>
+  <slot />
+</div>

@@ -1,0 +1,110 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import Icon from '../../../components/Icon.astro';
+import CtaBand from '../../../components/CtaBand.astro';
+import Reveal from '../../../components/Reveal.astro';
+import { SITE } from '../../../site.config';
+import { services } from '../../../data/services';
+import { locations, nearbyLocations } from '../../../data/locations';
+import { breadcrumbSchema } from '../../../lib/schema';
+
+export function getStaticPaths() {
+  return locations.map((location) => ({
+    params: { location: location.slug },
+    props: { location },
+  }));
+}
+
+const { location } = Astro.props;
+const path = `/locations/${location.slug}/`;
+const nearby = nearbyLocations(location.slug, 6);
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Service Areas', href: '/locations/' },
+  { label: location.name, href: path },
+];
+const title = `Accountant & Bookkeeper in ${location.name}, VIC ${location.postcode}`;
+const description = `Local accounting & bookkeeping in ${location.name}. Tax returns, BAS, payroll & business advice for ${location.name} (${location.shire}). Free consultation — call ${SITE.phone}.`;
+const schema = [breadcrumbSchema(crumbs)];
+---
+<BaseLayout title={title} description={description} path={path} schema={schema}>
+  <Breadcrumbs items={crumbs} />
+  <section style="padding-top:28px">
+    <div class="container">
+      <div class="split">
+        <Reveal variant="left">
+          <span class="eyebrow">{location.name} · {location.postcode} · {location.shire}</span>
+          <h1>Accountant &amp; Bookkeeper in {location.name}</h1>
+          <p class="lead">
+            Friendly, affordable accounting and bookkeeping for the people and businesses of {location.name}.
+          </p>
+          <p>{location.blurb}</p>
+          <p>
+            From individual tax returns to full business bookkeeping, BAS and payroll, we’re the
+            convenient local choice for {location.name}. Basic tax returns start from just
+            ${SITE.pricing.basicTaxReturnFrom}, and your first consultation is free.
+          </p>
+          <div class="btn-row">
+            <a href={`tel:${SITE.phoneE164}`} class="btn btn-primary">Call now</a>
+            <a href="/contact/" class="btn btn-outline">Free Consultation</a>
+          </div>
+        </Reveal>
+        <Reveal variant="right">
+          <div class="contact-card">
+            <h3 class="mt-0">Why {location.name} chooses us</h3>
+            <ul class="ticks">
+              <li>Local knowledge of the {location.shire}</li>
+              <li>Basic tax returns from ${SITE.pricing.basicTaxReturnFrom}</li>
+              <li>Online or in-person — your choice</li>
+              <li>Tax, BAS, bookkeeping &amp; payroll in one place</li>
+              <li>Free, no-obligation first chat</li>
+            </ul>
+          </div>
+        </Reveal>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services for this location (combo links) -->
+  <section class="section-soft">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Our services in {location.name}</span>
+        <h2>How we help {location.name} locals</h2>
+      </div>
+      <div class="grid grid-3">
+        {services.map((s, i) => (
+          <Reveal variant="up" delay={(i % 3) * 0.08}>
+            <a class="card" href={`/locations/${location.slug}/${s.slug}/`}>
+              <div class="icon-badge"><Icon name={s.icon} class="" /></div>
+              <h3>{s.shortName} in {location.name}</h3>
+              <p>{s.summary}</p>
+              <span class="arrow">Learn more →</span>
+            </a>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Nearby areas -->
+  <section>
+    <div class="container">
+      <div class="section-head"><span class="eyebrow">Nearby</span><h2>We also serve these nearby areas</h2></div>
+      <div class="grid grid-4">
+        {nearby.map((l, i) => (
+          <Reveal variant="scale" delay={(i % 4) * 0.05}>
+            <a class="card" href={`/locations/${l.slug}/`} style="padding:16px 18px">
+              <strong style="color:var(--ink)">{l.name}</strong>
+              <div style="font-size:0.82rem;color:var(--muted)">{l.postcode} · {l.shire}</div>
+            </a>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CtaBand title={`Looking for an accountant in ${location.name}?`} text={`Call Shannon on ${SITE.phone} for a free consultation. Local, affordable and easy to deal with.`} />
+</BaseLayout>
