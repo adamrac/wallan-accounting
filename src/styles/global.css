@@ -41,6 +41,10 @@ body {
   line-height: 1.65;
   font-size: 17px;
   -webkit-font-smoothing: antialiased;
+  /* Safety net: never allow sideways scroll from decorative/animated elements.
+     `clip` (unlike `hidden`) does not create a scroll container, so the sticky
+     header keeps working. */
+  overflow-x: clip;
 }
 
 /* Keep page content above the fixed decorative AmbientBackground (z-index:0) */
@@ -557,9 +561,16 @@ a.card:hover {
   color: var(--purple-dark);
 }
 
+.nav-cta {
+  display: none;
+}
 @media (max-width: 1150px) {
   .nav,
   .header-phone {
+    display: none;
+  }
+  /* The persistent CTA moves into the menu so the bar never overflows. */
+  .header-cta > .btn-primary {
     display: none;
   }
   .nav-toggle {
@@ -582,6 +593,11 @@ a.card:hover {
   }
   .nav.open a {
     padding: 12px;
+  }
+  .nav.open .nav-cta {
+    display: block;
+    margin-top: 10px;
+    text-align: center;
   }
 }
 
@@ -785,11 +801,27 @@ a.card:hover {
   border-radius: var(--radius);
   padding: 30px;
 }
+/* Long unbreakable strings (e.g. the email address) must wrap on narrow
+   screens instead of forcing the card wider than the viewport. `anywhere`
+   also shrinks the element's min-content width so grid/flex items can shrink. */
+.contact-card,
+.contact-row,
+.card {
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+/* Reveal wrappers are grid/flex items; allow them to shrink below content. */
+.reveal {
+  min-width: 0;
+}
 .contact-row {
   display: flex;
   gap: 14px;
   align-items: flex-start;
   margin-bottom: 18px;
+}
+.contact-row > div {
+  min-width: 0;
 }
 .contact-row .icon-badge {
   margin-bottom: 0;
@@ -855,6 +887,12 @@ html.reveal-ready .reveal.r-left { transform: translateX(-38px); }
 html.reveal-ready .reveal.r-right { transform: translateX(38px); }
 html.reveal-ready .reveal.r-scale { transform: scale(0.93); }
 html.reveal-ready .reveal.r-fade { transform: none; }
+/* On small screens a sideways start position can push content past the
+   viewport edge (horizontal scroll), so animate vertically instead. */
+@media (max-width: 860px) {
+  html.reveal-ready .reveal.r-left,
+  html.reveal-ready .reveal.r-right { transform: translateY(28px); }
+}
 html.reveal-ready .reveal.is-visible {
   opacity: 1;
   transform: none;
